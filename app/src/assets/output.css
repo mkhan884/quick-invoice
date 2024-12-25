@@ -912,6 +912,30 @@ body {
   width: 40%;
 }
 
+.w-1\/12 {
+  width: 8.333333%;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.w-32 {
+  width: 8rem;
+}
+
+.w-64 {
+  width: 16rem;
+}
+
+.w-40 {
+  width: 10rem;
+}
+
+.w-44 {
+  width: 11rem;
+}
+
 .min-w-32 {
   min-width: 8rem;
 }
@@ -1207,6 +1231,11 @@ body {
   background-color: hsl(var(--popover));
 }
 
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
+}
+
 .fill-current {
   fill: currentColor;
 }
@@ -1333,6 +1362,10 @@ body {
 
 .pr-5 {
   padding-right: 1.25rem;
+}
+
+.pt-5 {
+  padding-top: 1.25rem;
 }
 
 .text-left {

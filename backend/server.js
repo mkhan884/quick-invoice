@@ -3,6 +3,7 @@ const userRouter = require ('./routes/userRoutes')
 const mysql = require('mysql2');
 const app = express()
 const dotenv = require('dotenv');
+var cors = require('cors')
 app.use(express.json())
 dotenv.config()
 
@@ -32,7 +33,8 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
-//Routes
+
+app.use(cors())
 
 app.use('/users', (req, res, next) =>{
   req.db = db;

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-wrapper min-h-screen">
-    <div class="overview text-2xl font-bold p-5">Overview</div>
+    <div class="overview text-2xl font-bold pl-5 pt-5 pb-2">Overview</div>
     <div class="yearly-monthly pl-5 pr-5 pb-5">
       <Tabs default-value="Yearly">
         <TabsList>

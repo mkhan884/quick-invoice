@@ -1,8 +1,9 @@
 <template>
-  <div class="flex h-screen flex-col justify-between border-e bg-white w-1/6">
+  <div class="flex h-screen flex-col justify-between border-e bg-white">
     <div class="px-4 py-6">
       <ul class="mt-6 space-y-1">
         <li class="group">
+          <router-link to="/app/dashboard">
           <a
             href="#"
             class="flex flex-row block rounded-lg px-4 py-2 text-sm text-gray-500 font-medium hover:bg-gray-100 hover:text-gray-700 align-middle"
@@ -28,8 +29,10 @@
             </div>
             <div class="label ml-2">Dashboard</div>
           </a>
+        </router-link>
         </li>
         <li class="group">
+          <router-link to="/app/invoices">
           <a
             href="#"
             class="flex flex-row block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 align-middle"
@@ -56,6 +59,7 @@
             </div>
             <div class="label ml-2">Invoices</div>
           </a>
+        </router-link>
         </li>
       </ul>
     </div>

@@ -20,7 +20,9 @@
       </CardFooter>
       <div class="mb-4 text-center text-sm">
         Already have an account?
-        <a href="#" class="underline"> Login </a>
+        <router-link to="/">
+          <a class="underline"> Login </a>
+        </router-link>
       </div>
     </Card>
   </div>

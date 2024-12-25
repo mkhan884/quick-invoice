@@ -1,9 +1,7 @@
 <template>
-  <Dashboard />
-  <InvoiceTable />
-  <Register />
-  <Login />
-  <Sidebar />
+  <div class="app">
+    <router-view />
+  </div>
 </template>
 
 <script>
