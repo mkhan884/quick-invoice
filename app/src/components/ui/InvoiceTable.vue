@@ -1,5 +1,5 @@
 <template>
-  <div class="card-wrapper w-3/5">
+  <div class="card-wrapper w-4/6">
     <Card class="">
       <CardHeader class="flex flex-row justify-between">
         <div>
@@ -26,15 +26,16 @@
                     id="invoice-number"
                     type="text"
                     placeholder="Invoice Number"
+                    v-model="invoiceNumber"
                   />
                 </div>
                 <div class="invoice-date flex flex-col w-full">
                   <Label for="invoice-date" class="mb-2 text-xs">Date</Label>
-                  <Input class="text-xs" id="invoice-date" type="date" />
+                  <Input class="text-xs" id="invoice-date" type="date" v-model="date" />
                 </div>
                 <div class="invoice-currency flex flex-col w-full">
                   <Label for="invoice-currency" class="mb-2 text-xs">Currency</Label>
-                  <Input class="text-xs" id="invoice-currency" type="text" />
+                  <Input class="text-xs" id="invoice-currency" type="text" v-model="currency" />
                 </div>
               </div>
               <div class="bill-to mt-1">
@@ -45,7 +46,13 @@
                   <div class="left-col w-full">
                     <div>
                       <Label for="company-name" class="text-xs">Name</Label>
-                      <Input class="text-xs" id="company-name" type="text" placeholder="Name" />
+                      <Input
+                        class="text-xs"
+                        id="company-name"
+                        type="text"
+                        placeholder="Name"
+                        v-model="billToName"
+                      />
                     </div>
                     <div class="mt-2">
                       <Label for="company-address" class="text-xs">Address</Label>
@@ -54,21 +61,40 @@
                         id="company-address"
                         type="text"
                         placeholder="Address"
+                        v-model="billToAddress"
                       />
                     </div>
                     <div class="mt-2">
                       <Label for="company-number" class="text-xs">Business Number</Label>
-                      <Input class="text-xs" id="company-number" type="text" placeholder="Number" />
+                      <Input
+                        class="text-xs"
+                        id="company-number"
+                        type="text"
+                        placeholder="Number"
+                        v-model="billToNumber"
+                      />
                     </div>
                   </div>
                   <div class="right-col w-full">
                     <div class="city">
                       <Label for="city" class="text-xs">City</Label>
-                      <Input class="text-xs" id="city" type="text" placeholder="City" />
+                      <Input
+                        class="text-xs"
+                        id="city"
+                        type="text"
+                        placeholder="City"
+                        v-model="billToCity"
+                      />
                     </div>
                     <div class="country mt-2">
                       <Label for="country" class="text-xs">Country</Label>
-                      <Input class="text-xs" id="country" type="text" placeholder="Country" />
+                      <Input
+                        class="text-xs"
+                        id="country"
+                        type="text"
+                        placeholder="Country"
+                        v-model="billToCountry"
+                      />
                     </div>
                   </div>
                 </div>
@@ -82,25 +108,55 @@
                   <div class="left-col w-full">
                     <div>
                       <Label for="name" class="text-xs">Name</Label>
-                      <Input class="text-xs" id="name" type="text" placeholder="Name" />
+                      <Input
+                        class="text-xs"
+                        id="name"
+                        type="text"
+                        placeholder="Name"
+                        v-model="billFromName"
+                      />
                     </div>
                     <div class="mt-2">
                       <Label for="address" class="text-xs">Address</Label>
-                      <Input class="text-xs" id="address" type="text" placeholder="Address" />
+                      <Input
+                        class="text-xs"
+                        id="address"
+                        type="text"
+                        placeholder="Address"
+                        v-model="billFromAddress"
+                      />
                     </div>
                     <div class="mt-2">
                       <Label for="number" class="text-xs">Phone Number</Label>
-                      <Input class="text-xs" id="number" type="text" placeholder="Number" />
+                      <Input
+                        class="text-xs"
+                        id="number"
+                        type="text"
+                        placeholder="Number"
+                        v-model="billFromNumber"
+                      />
                     </div>
                   </div>
                   <div class="right-col w-full">
                     <div class="city">
                       <Label for="city" class="text-xs">City</Label>
-                      <Input class="text-xs" id="city" type="text" placeholder="City" />
+                      <Input
+                        class="text-xs"
+                        id="city"
+                        type="text"
+                        placeholder="City"
+                        v-model="billFromCity"
+                      />
                     </div>
                     <div class="country mt-2">
                       <Label for="country" class="text-xs">Country</Label>
-                      <Input class="text-xs" id="country" type="text" placeholder="Country" />
+                      <Input
+                        class="text-xs"
+                        id="country"
+                        type="text"
+                        placeholder="Country"
+                        v-model="billFromCountry"
+                      />
                     </div>
                   </div>
                 </div>
@@ -109,11 +165,11 @@
               <div class="items">
                 <div class="items-header flex justify-between">
                   <div class="items-label">
-                    <Label for="items-label">Items</Label>
+                    <Label for="items-label">Item</Label>
                   </div>
-                  <div class="items-btn align-top">
+                  <!-- <div class="items-btn align-top">
                     <Button class="" variant="link" size="sm">Add Item</Button>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="description">
                   <Label for="description-label" class="text-xs">Description</Label>
@@ -122,12 +178,19 @@
                     id="description-input"
                     type="text"
                     placeholder="Description"
+                    v-model="description"
                   />
                 </div>
                 <div class="rate-quantity-total flex space-x-4 mt-1">
                   <div class="rate w-full">
                     <Label for="rate-label" class="text-xs">Rate</Label>
-                    <Input class="text-xs" id="rate-input" type="number" placeholder="Rate" />
+                    <Input
+                      class="text-xs"
+                      id="rate-input"
+                      type="number"
+                      placeholder="Rate"
+                      v-model="rate"
+                    />
                   </div>
                   <div class="quantity w-full">
                     <Label for="quantity-label" class="text-xs">Quantity</Label>
@@ -136,6 +199,7 @@
                       id="quantity-input"
                       type="number"
                       placeholder="Quantity"
+                      v-model="quantity"
                     />
                   </div>
                   <div class="total w-full">
@@ -146,20 +210,23 @@
                       type="text"
                       disabled
                       placeholder="Total"
+                      v-model="total"
                     />
                   </div>
                 </div>
               </div>
               <div class="notes !m-0">
                 <Label for="notes-label" class="text-xs">Notes</Label>
-                <Textarea placeholder="Type your notes here." />
+                <Textarea placeholder="Type your notes here." v-model="notes" />
               </div>
               <div class="balance !m-0">
                 <div class="balance-label">
                   <Label for="balance-label" class="text-xs">Balance Due</Label>
                 </div>
                 <div class="balance-amount">
-                  <Badge class="text-sm font-bold" variant="secondary"> AED 4321.10 </Badge>
+                  <Badge class="text-sm font-bold" variant="secondary" v-model="balance">
+                    {{ balance }}
+                  </Badge>
                 </div>
               </div>
               <DialogFooter>
@@ -175,6 +242,7 @@
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Date</TableHead>
               <TableHead>Invoice</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Amount</TableHead>
@@ -184,6 +252,9 @@
           </TableHeader>
           <TableBody>
             <TableRow v-for="invoice in invoices" :key="invoice.invoice">
+              <TableCell>
+                {{ invoice.date }}
+              </TableCell>
               <TableCell>
                 {{ invoice.invoice }}
               </TableCell>
@@ -223,17 +294,17 @@
                   <DropdownMenuContent class="w-28">
                     <DropdownMenuGroup>
                       <DropdownMenuItem>
-                      <span class="text-xs">Edit Invoice</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span class="text-xs">Mark as paid</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span class="text-xs">Mark as pending</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span class="text-xs">Download invoice</span>
-                    </DropdownMenuItem>
+                        <span class="text-xs">Edit Invoice</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span class="text-xs">Mark as paid</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span class="text-xs">Mark as pending</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span class="text-xs">Download invoice</span>
+                      </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -324,20 +395,25 @@ export default {
   },
   data() {
     return {
-      invoices: [
-        {
-          invoice: '001',
-          customer: 'Microsoft',
-          amount: '$4000',
-          status: 'PENDING',
-        },
-        {
-          invoice: '002',
-          customer: 'Tesla',
-          amount: '$5431.10',
-          status: 'PAID',
-        },
-      ],
+      invoiceNumber: '',
+      date: '',
+      currency: '',
+      billToName: '',
+      billToAddress: '',
+      billToCity: '',
+      billToCountry: '',
+      billToNumber: '',
+      billFromName: '',
+      billFromAddress: '',
+      billFromCity: '',
+      billFromCountry: '',
+      billFromNumber: '',
+      description: '',
+      rate: '',
+      quantity: '',
+      total: '',
+      notes: '',
+      balance: '',
     }
   },
 }

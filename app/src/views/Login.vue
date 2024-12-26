@@ -22,14 +22,14 @@
         Don't have an account?
         <router-link to="/register">
           <a class="underline"> Sign up </a>
-      </router-link>
+        </router-link>
       </div>
     </Card>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -56,25 +56,24 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
-    async handleLogin(){
-      try{
-        const response = await axios.post("http://localhost:3000/users/login", {
+    async handleLogin() {
+      try {
+        const response = await axios.post('http://localhost:3000/users/login', {
           email: this.email,
-          password: this.password
+          password: this.password,
         })
         const token = response.data.token
         localStorage.setItem('authToken', token)
-        this.$router.push('/app/dashboard');
-      }
-      catch(err){
+        this.$router.push('/app/dashboard')
+      } catch (err) {
         alert(err.response.data.error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

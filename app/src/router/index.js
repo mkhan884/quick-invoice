@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
-import Login from '@/views/Login.vue';
-import Register from '@/views/Register.vue';
-import MainLayout from '@/layouts/MainLayout.vue';
-import Dashboard from '@/components/ui/Dashboard.vue';
-import InvoiceTable from '@/components/ui/InvoiceTable.vue';
+import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
+import MainLayout from '@/layouts/MainLayout.vue'
+import Dashboard from '@/components/ui/Dashboard.vue'
+import InvoiceTable from '@/components/ui/InvoiceTable.vue'
 
 const routes = [
   { path: '/', name: 'Login', component: Login },
@@ -17,11 +17,11 @@ const routes = [
       { path: 'invoices', component: InvoiceTable },
     ],
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-export default router;
+export default router

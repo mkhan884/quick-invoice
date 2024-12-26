@@ -1,10 +1,10 @@
 <template>
   <div class="layout flex">
     <div class="sidebar w-44">
-        <Sidebar />
+      <Sidebar />
     </div>
     <div class="content flex-1">
-        <router-view />
+      <router-view />
     </div>
   </div>
 </template>
@@ -13,8 +13,8 @@
 import Sidebar from '../components/ui/Sidebar.vue'
 
 export default {
-    components:{
-        Sidebar
-    }
+  components: {
+    Sidebar,
+  },
 }
 </script>

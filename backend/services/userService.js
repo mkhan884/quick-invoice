@@ -10,7 +10,7 @@ exports.registerUser = async (db, userInfo) => {
             if(err){
                 return reject(err)
             }
-            resolve(result)
+            resolve()
         })
     })
 }
