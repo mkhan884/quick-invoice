@@ -1,16 +1,15 @@
 <template>
   <div class="card-wrapper w-4/6">
-    <Card class="">
+    <Toaster />
+    <Card>
       <CardHeader class="flex flex-row justify-between">
         <div>
           <CardTitle> Invoices </CardTitle>
           <CardDescription> Manage all your invoices here </CardDescription>
         </div>
         <div class="new-invoice">
-          <Dialog>
-            <DialogTrigger as-child>
-              <Button size="sm">New Invoice</Button>
-            </DialogTrigger>
+          <Button size="sm" @click="this.isDialogOpen = !this.isDialogOpen">New Invoice</Button>
+          <Dialog v-model:open="isDialogOpen">
             <DialogScrollContent class="sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>New Invoice</DialogTitle>
@@ -224,22 +223,20 @@
                   <Label for="balance-label" class="text-xs">Balance Due</Label>
                 </div>
                 <div class="balance-amount">
-                  <Badge class="text-sm font-bold" variant="secondary" v-model="balance">
-                    {{ balance }}
+                  <Badge class="text-sm font-bold" variant="secondary" v-model="total">
+                    {{ currency }} {{ total }}
                   </Badge>
                 </div>
               </div>
               <DialogFooter>
-                <DialogClose as-child>
-                  <Button size="sm" type="submit"> Create </Button>
-                </DialogClose>
+                <Button size="sm" type="submit" @click.prevent="createInvoice">Create</Button>
               </DialogFooter>
             </DialogScrollContent>
           </Dialog>
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table v-if="invoices.length !== 0" class="text-xs">
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead>
@@ -251,23 +248,19 @@
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow v-for="invoice in invoices" :key="invoice.invoice">
+            <TableRow v-for="invoice in invoices" :key="invoice.invoice" :invoice="invoice">
               <TableCell>
-                {{ invoice.date }}
+                {{ invoice.invoice_date }}
               </TableCell>
               <TableCell>
-                {{ invoice.invoice }}
+                {{ invoice.invoice_number }}
               </TableCell>
               <TableCell>
-                {{ invoice.customer }}
+                {{ invoice.bill_to_name }}
               </TableCell>
-              <TableCell>
-                {{ invoice.amount }}
-              </TableCell>
-              <TableCell class="flex justify-center">
-                <Badge class="w-20 flex justify-center" variant="secondary">{{
-                  invoice.status
-                }}</Badge>
+              <TableCell> {{ invoice.currency }} {{ invoice.total }} </TableCell>
+              <TableCell class="align-middle text-center">
+                <Badge class="w-20 justify-center" variant="secondary">{{ invoice.status }}</Badge>
               </TableCell>
               <TableCell>
                 <DropdownMenu>
@@ -293,17 +286,23 @@
                   </DropdownMenuTrigger>
                   <DropdownMenuContent class="w-28">
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem @click="handleAction('editInvoice', invoice)">
                         <span class="text-xs">Edit Invoice</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <span class="text-xs">Mark as paid</span>
+                        <span class="text-xs" @click="handleAction('markAsPaid', invoice)"
+                          >Mark as paid</span
+                        >
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <span class="text-xs">Mark as pending</span>
+                        <span class="text-xs" @click="handleAction('markAsPending', invoice)"
+                          >Mark as pending</span
+                        >
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <span class="text-xs">Download invoice</span>
+                        <span class="text-xs" @click="handleAction('downloadInvoice', invoice)"
+                          >Download invoice</span
+                        >
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
@@ -312,6 +311,17 @@
             </TableRow>
           </TableBody>
         </Table>
+        <div class="no-invoice h-40 flex justify-center items-center" v-else>
+          <div class="message flex flex-col h-fit w-fit">
+            <div class="flex justify-center text-sm text-primary font-medium">
+              You have no invoices available
+            </div>
+            <div class="text-xs text-muted-foreground">
+              It seems there are no invoices to display. You can create a new invoice to get
+              started.
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   </div>
@@ -358,6 +368,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
+import Toaster from '@/components/ui/toast/Toaster.vue'
+import { useToast } from '@/components/ui/toast/use-toast'
+import axios from 'axios'
 export default {
   components: {
     Card,
@@ -392,10 +405,12 @@ export default {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    Toaster,
   },
   data() {
     return {
-      invoiceNumber: '',
+      user_id: 15,
+      invoicenumber: '',
       date: '',
       currency: '',
       billToName: '',
@@ -409,14 +424,149 @@ export default {
       billFromCountry: '',
       billFromNumber: '',
       description: '',
-      rate: '',
-      quantity: '',
-      total: '',
+      rate: 0,
+      quantity: 0,
       notes: '',
-      balance: '',
+      status: '',
+      isDialogOpen: false,
+      invoices: [],
     }
+  },
+  mounted() {
+    this.getInvoices()
+  },
+  computed: {
+    total() {
+      return this.rate * this.quantity
+    },
+  },
+  methods: {
+    async handleAction(action, invoice) {
+      switch (action) {
+        case 'editInvoice':
+          console.log('edit invoice')
+          break
+
+        case 'markAsPending':
+          if (invoice.status === 'PENDING') break
+          try {
+            const token = localStorage.getItem('authToken')
+            await axios.patch(
+              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
+              {
+                status: 'PENDING',
+              },
+              { headers: { Authorization: `Bearer ${token}` } },
+            )
+            this.getInvoices()
+          } catch (err) {
+            console.error(err)
+            break
+          }
+          break
+
+        case 'markAsPaid':
+          if (invoice.status === 'PAID') break
+          try {
+            const token = localStorage.getItem('authToken')
+            const response = await axios.patch(
+              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
+              {
+                status: 'PAID',
+              },
+              { headers: { Authorization: `Bearer ${token}` } },
+            )
+            console.log(response)
+            this.getInvoices()
+          } catch (err) {
+            console.error(err)
+            break
+          }
+          break
+
+        case 'downloadInvoice':
+          console.log('downloadInvoice')
+          break
+      }
+    },
+
+    async createInvoice() {
+      const { toast } = useToast()
+      const token = localStorage.getItem('authToken')
+      try {
+        const response = await axios.post(
+          'http://localhost:3000/invoice/create',
+          {
+            invoice_number: this.invoiceNumber,
+            invoice_date: this.date,
+            bill_from_name: this.billFromName,
+            bill_from_address: this.billFromAddress,
+            bill_from_city: this.billFromCity,
+            bill_from_country: this.billFromCountry,
+            bill_from_phone_number: this.billFromNumber,
+            bill_to_name: this.billToName,
+            bill_to_address: this.billToAddress,
+            bill_to_city: this.billToCity,
+            bill_to_country: this.billToCountry,
+            bill_to_phone_number: this.billToNumber,
+            description: this.description,
+            quantity: this.quantity,
+            rate: this.rate,
+            total: this.total,
+            currency: this.currency,
+            notes: this.notes,
+            status: this.status,
+          },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        toast({
+          description: response.data.message,
+        })
+        this.isDialogOpen = !this.isDialogOpen
+        this.resetForm()
+        this.getInvoices()
+      } catch (err) {
+        toast({
+          description: err.response.data.error,
+        })
+      }
+    },
+
+    async getInvoices() {
+      const token = localStorage.getItem('authToken')
+      try {
+        const response = await axios.get('http://localhost:3000/invoice/get', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        this.invoices = response.data.invoices.map((invoice) => ({
+          ...invoice,
+          invoice_date: new Date(invoice.invoice_date).toISOString().split('T')[0],
+        }))
+      } catch (err) {
+        console.error(err.response.data.error)
+      }
+    },
+
+    resetForm() {
+      this.invoiceNumber = ''
+      this.date = ''
+      this.currency = ''
+      this.billToName = ''
+      this.billToAddress = ''
+      this.billToNumber = ''
+      this.billToCity = ''
+      this.billToCountry = ''
+      this.billFromName = ''
+      this.billFromAddress = ''
+      this.billFromNumber = ''
+      this.billFromCity = ''
+      this.billFromCountry = ''
+      this.description = ''
+      this.rate = 0
+      this.quantity = 0
+      this.total = 0
+      this.notes = ''
+    },
   },
 }
 </script>
-
-<style></style>

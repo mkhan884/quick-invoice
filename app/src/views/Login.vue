@@ -1,5 +1,6 @@
 <template>
   <div class="login-wrapper flex justify-center items-center min-h-screen">
+    <Toaster />
     <Card class="w-1/4">
       <CardHeader>
         <CardTitle>Login</CardTitle>
@@ -7,12 +8,18 @@
       </CardHeader>
       <CardContent>
         <div class="email">
-          <Label for="email">Email</Label>
-          <Input id="email" type="email" placeholder="Email" v-model="email" />
+          <Label for="email" class="text-xs">Email</Label>
+          <Input class="text-xs" id="email" type="email" placeholder="Email" v-model="email" />
         </div>
         <div class="password mt-2">
-          <Label for="password">Password</Label>
-          <Input id="password" type="password" placeholder="Password" v-model="password" />
+          <Label class="text-xs" for="password">Password</Label>
+          <Input
+            class="text-xs"
+            id="password"
+            type="password"
+            placeholder="Password"
+            v-model="password"
+          />
         </div>
       </CardContent>
       <CardFooter>
@@ -41,6 +48,8 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Toaster from '@/components/ui/toast/Toaster.vue'
+import { useToast } from '@/components/ui/toast/use-toast'
 export default {
   components: {
     Button,
@@ -52,6 +61,7 @@ export default {
     CardTitle,
     Input,
     Label,
+    Toaster,
   },
   data() {
     return {
@@ -61,6 +71,7 @@ export default {
   },
   methods: {
     async handleLogin() {
+      const { toast } = useToast()
       try {
         const response = await axios.post('http://localhost:3000/users/login', {
           email: this.email,
@@ -70,7 +81,7 @@ export default {
         localStorage.setItem('authToken', token)
         this.$router.push('/app/dashboard')
       } catch (err) {
-        alert(err.response.data.error)
+        toast({ description: err.response.data.error })
       }
     },
   },
