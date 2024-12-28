@@ -1515,6 +1515,10 @@ body {
   font-weight: 700;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .leading-none {
   line-height: 1;
 }

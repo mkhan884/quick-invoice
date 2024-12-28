@@ -289,6 +289,15 @@
                       <DropdownMenuItem @click="handleAction('editInvoice', invoice)">
                         <span class="text-xs">Edit Invoice</span>
                       </DropdownMenuItem>
+                      <DropdownMenuItem @click="handleAction('deleteInvoice', invoice)">
+                        <span class="text-xs">Delete Invoice</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span class="text-xs" @click="handleAction('downloadInvoice', invoice)"
+                          >Download invoice</span
+                        >
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem>
                         <span class="text-xs" @click="handleAction('markAsPaid', invoice)"
                           >Mark as paid</span
@@ -297,11 +306,6 @@
                       <DropdownMenuItem>
                         <span class="text-xs" @click="handleAction('markAsPending', invoice)"
                           >Mark as pending</span
-                        >
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span class="text-xs" @click="handleAction('downloadInvoice', invoice)"
-                          >Download invoice</span
                         >
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -371,6 +375,8 @@ import { Textarea } from '@/components/ui/textarea'
 import Toaster from '@/components/ui/toast/Toaster.vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import axios from 'axios'
+import { invoicePDF } from '../../helpers/invoicePDF'
+
 export default {
   components: {
     Card,
@@ -446,6 +452,10 @@ export default {
         case 'editInvoice':
           console.log('edit invoice')
           break
+        
+        case 'deleteInvoice':
+          console.log('delete invoice')
+          break;
 
         case 'markAsPending':
           if (invoice.status === 'PENDING') break
@@ -476,7 +486,6 @@ export default {
               },
               { headers: { Authorization: `Bearer ${token}` } },
             )
-            console.log(response)
             this.getInvoices()
           } catch (err) {
             console.error(err)
@@ -485,7 +494,15 @@ export default {
           break
 
         case 'downloadInvoice':
-          console.log('downloadInvoice')
+          const { toast } = useToast()
+          try{
+            await invoicePDF(invoice);
+          }
+          catch(err){
+            toast({
+              description: 'Unable to download the invoice.',
+            })
+          }
           break
       }
     },

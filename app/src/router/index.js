@@ -28,7 +28,6 @@ const router = createRouter({
 // Add navigation guard. Check token expiry, and userId before navigating to routes.
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('authToken')
-
   if (to.meta.requiresAuth) {
     if (token === null) return next('/')
 

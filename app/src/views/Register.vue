@@ -8,12 +8,12 @@
       </CardHeader>
       <CardContent>
         <div class="email">
-          <Label for="email">Email</Label>
-          <Input id="email" type="email" placeholder="Email" v-model="email" />
+          <Label for="email" class="text-xs">Email</Label>
+          <Input id="email" type="email" placeholder="Email" v-model="email" class="text-xs" />
         </div>
         <div class="password mt-2">
-          <Label for="password">Password</Label>
-          <Input id="password" type="password" placeholder="Password" v-model="password" />
+          <Label for="password" class="text-xs">Password</Label>
+          <Input class="text-xs" id="password" type="password" placeholder="Password" v-model="password" />
         </div>
       </CardContent>
       <CardFooter>
