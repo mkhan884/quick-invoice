@@ -32,3 +32,13 @@ exports.changeStatus = async (req,res) =>{
         return res.status(500).send({error: 'Unable to change status of the invoice.'})
     }
 }
+
+exports.deleteInvoice = async (req,res) =>{
+    const invoice_id = req.body.id;
+    try{
+        await invoiceService.deleteInvoice(req.db, invoice_id);
+        return res.status(200).send({message: 'Successfully deleted invoice.'})
+    }catch(err){
+        return res.status(500).send({error: 'Unable to delete the invoice.'})
+    }
+}

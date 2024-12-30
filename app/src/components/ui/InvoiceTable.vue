@@ -9,6 +9,7 @@
         </div>
         <div class="new-invoice">
           <Button size="sm" @click="this.isDialogOpen = !this.isDialogOpen">New Invoice</Button>
+
           <Dialog v-model:open="isDialogOpen">
             <DialogScrollContent class="sm:max-w-[600px]">
               <DialogHeader>
@@ -166,9 +167,6 @@
                   <div class="items-label">
                     <Label for="items-label">Item</Label>
                   </div>
-                  <!-- <div class="items-btn align-top">
-                    <Button class="" variant="link" size="sm">Add Item</Button>
-                  </div> -->
                 </div>
                 <div class="description">
                   <Label for="description-label" class="text-xs">Description</Label>
@@ -286,25 +284,31 @@
                   </DropdownMenuTrigger>
                   <DropdownMenuContent class="w-28">
                     <DropdownMenuGroup>
-                      <DropdownMenuItem @click="handleAction('editInvoice', invoice)">
+                      <DropdownMenuItem @click="handleTableDropdownAction('editInvoice', invoice)">
                         <span class="text-xs">Edit Invoice</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem @click="handleAction('deleteInvoice', invoice)">
+                      <DropdownMenuItem @click="openDeleteDialog(invoice)">
                         <span class="text-xs">Delete Invoice</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <span class="text-xs" @click="handleAction('downloadInvoice', invoice)"
+                        <span
+                          class="text-xs"
+                          @click="handleTableDropdownAction('downloadInvoice', invoice)"
                           >Download invoice</span
                         >
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>
-                        <span class="text-xs" @click="handleAction('markAsPaid', invoice)"
+                        <span
+                          class="text-xs"
+                          @click="handleTableDropdownAction('markAsPaid', invoice)"
                           >Mark as paid</span
                         >
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <span class="text-xs" @click="handleAction('markAsPending', invoice)"
+                        <span
+                          class="text-xs"
+                          @click="handleTableDropdownAction('markAsPending', invoice)"
                           >Mark as pending</span
                         >
                       </DropdownMenuItem>
@@ -313,6 +317,249 @@
                 </DropdownMenu>
               </TableCell>
             </TableRow>
+
+            <AlertDialog v-model:open="confirmDeleteDialog">
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the invoice from our
+                    servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction @click="deleteInvoice()">Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <div class="editDialog">
+              <Dialog v-model:open="isEditDialogOpen">
+                <DialogScrollContent class="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>Edit Invoice</DialogTitle>
+                    <DialogDescription>
+                      Edit your invoice here. Click update when you're done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div class="invoice-date flex flex-row mt-2 space-x-4">
+                    <div class="invoice-number flex flex-col w-full">
+                      <Label for="invoice-number" class="mb-2 text-xs">Invoice Number</Label>
+                      <Input
+                        class="text-xs"
+                        id="invoice-number"
+                        type="text"
+                        placeholder="Invoice Number"
+                        v-model="invoiceNumber"
+                      />
+                    </div>
+                    <div class="invoice-date flex flex-col w-full">
+                      <Label for="invoice-date" class="mb-2 text-xs">Date</Label>
+                      <Input class="text-xs" id="invoice-date" type="date" v-model="date" />
+                    </div>
+                    <div class="invoice-currency flex flex-col w-full">
+                      <Label for="invoice-currency" class="mb-2 text-xs">Currency</Label>
+                      <Input class="text-xs" id="invoice-currency" type="text" v-model="currency" />
+                    </div>
+                  </div>
+                  <div class="bill-to mt-1">
+                    <div>
+                      <Label for="bill-to" class="mb-2">Bill To</Label>
+                    </div>
+                    <div class="two-cols flex flex-row space-x-4">
+                      <div class="left-col w-full">
+                        <div>
+                          <Label for="company-name" class="text-xs">Name</Label>
+                          <Input
+                            class="text-xs"
+                            id="company-name"
+                            type="text"
+                            placeholder="Name"
+                            v-model="billToName"
+                          />
+                        </div>
+                        <div class="mt-2">
+                          <Label for="company-address" class="text-xs">Address</Label>
+                          <Input
+                            class="text-xs"
+                            id="company-address"
+                            type="text"
+                            placeholder="Address"
+                            v-model="billToAddress"
+                          />
+                        </div>
+                        <div class="mt-2">
+                          <Label for="company-number" class="text-xs">Business Number</Label>
+                          <Input
+                            class="text-xs"
+                            id="company-number"
+                            type="text"
+                            placeholder="Number"
+                            v-model="billToNumber"
+                          />
+                        </div>
+                      </div>
+                      <div class="right-col w-full">
+                        <div class="city">
+                          <Label for="city" class="text-xs">City</Label>
+                          <Input
+                            class="text-xs"
+                            id="city"
+                            type="text"
+                            placeholder="City"
+                            v-model="billToCity"
+                          />
+                        </div>
+                        <div class="country mt-2">
+                          <Label for="country" class="text-xs">Country</Label>
+                          <Input
+                            class="text-xs"
+                            id="country"
+                            type="text"
+                            placeholder="Country"
+                            v-model="billToCountry"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bill-from mt-1 mb-1">
+                    <div>
+                      <Label for="bill-from" class="mb-2">Bill From</Label>
+                    </div>
+                    <div class="two-cols flex flex-row space-x-4">
+                      <div class="left-col w-full">
+                        <div>
+                          <Label for="name" class="text-xs">Name</Label>
+                          <Input
+                            class="text-xs"
+                            id="name"
+                            type="text"
+                            placeholder="Name"
+                            v-model="billFromName"
+                          />
+                        </div>
+                        <div class="mt-2">
+                          <Label for="address" class="text-xs">Address</Label>
+                          <Input
+                            class="text-xs"
+                            id="address"
+                            type="text"
+                            placeholder="Address"
+                            v-model="billFromAddress"
+                          />
+                        </div>
+                        <div class="mt-2">
+                          <Label for="number" class="text-xs">Phone Number</Label>
+                          <Input
+                            class="text-xs"
+                            id="number"
+                            type="text"
+                            placeholder="Number"
+                            v-model="billFromNumber"
+                          />
+                        </div>
+                      </div>
+                      <div class="right-col w-full">
+                        <div class="city">
+                          <Label for="city" class="text-xs">City</Label>
+                          <Input
+                            class="text-xs"
+                            id="city"
+                            type="text"
+                            placeholder="City"
+                            v-model="billFromCity"
+                          />
+                        </div>
+                        <div class="country mt-2">
+                          <Label for="country" class="text-xs">Country</Label>
+                          <Input
+                            class="text-xs"
+                            id="country"
+                            type="text"
+                            placeholder="Country"
+                            v-model="billFromCountry"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div class="items">
+                    <div class="items-header flex justify-between">
+                      <div class="items-label">
+                        <Label for="items-label">Item</Label>
+                      </div>
+                      <!-- <div class="items-btn align-top">
+                    <Button class="" variant="link" size="sm">Add Item</Button>
+                  </div> -->
+                    </div>
+                    <div class="description">
+                      <Label for="description-label" class="text-xs">Description</Label>
+                      <Input
+                        class="text-xs"
+                        id="description-input"
+                        type="text"
+                        placeholder="Description"
+                        v-model="description"
+                      />
+                    </div>
+                    <div class="rate-quantity-total flex space-x-4 mt-1">
+                      <div class="rate w-full">
+                        <Label for="rate-label" class="text-xs">Rate</Label>
+                        <Input
+                          class="text-xs"
+                          id="rate-input"
+                          type="number"
+                          placeholder="Rate"
+                          v-model="rate"
+                        />
+                      </div>
+                      <div class="quantity w-full">
+                        <Label for="quantity-label" class="text-xs">Quantity</Label>
+                        <Input
+                          class="text-xs"
+                          id="quantity-input"
+                          type="number"
+                          placeholder="Quantity"
+                          v-model="quantity"
+                        />
+                      </div>
+                      <div class="total w-full">
+                        <Label for="total-label" class="text-xs">Total</Label>
+                        <Input
+                          class="text-xs"
+                          id="total-input"
+                          type="text"
+                          disabled
+                          placeholder="Total"
+                          v-model="total"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="notes !m-0">
+                    <Label for="notes-label" class="text-xs">Notes</Label>
+                    <Textarea placeholder="Type your notes here." v-model="notes" />
+                  </div>
+                  <div class="balance !m-0">
+                    <div class="balance-label">
+                      <Label for="balance-label" class="text-xs">Balance Due</Label>
+                    </div>
+                    <div class="balance-amount">
+                      <Badge class="text-sm font-bold" variant="secondary" v-model="total">
+                        {{ currency }} {{ total }}
+                      </Badge>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button size="sm" type="submit" @click.prevent="editInvoice">Update</Button>
+                  </DialogFooter>
+                </DialogScrollContent>
+              </Dialog>
+            </div>
           </TableBody>
         </Table>
         <div class="no-invoice h-40 flex justify-center items-center" v-else>
@@ -332,6 +579,7 @@
 </template>
 
 <script>
+import NewInvoiceDialog from './NewInvoiceDialog.vue'
 import {
   Card,
   CardContent,
@@ -366,6 +614,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -412,10 +672,19 @@ export default {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
     Toaster,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+    NewInvoiceDialog
   },
   data() {
     return {
-      user_id: 15,
       invoicenumber: '',
       date: '',
       currency: '',
@@ -436,6 +705,10 @@ export default {
       status: '',
       isDialogOpen: false,
       invoices: [],
+      confirmDeleteDialog: false,
+      selectedInvoice: null,
+      isDialogOpen: false,
+      isEditDialogOpen: false,
     }
   },
   mounted() {
@@ -446,67 +719,14 @@ export default {
       return this.rate * this.quantity
     },
   },
-  methods: {
-    async handleAction(action, invoice) {
-      switch (action) {
-        case 'editInvoice':
-          console.log('edit invoice')
-          break
-        
-        case 'deleteInvoice':
-          console.log('delete invoice')
-          break;
-
-        case 'markAsPending':
-          if (invoice.status === 'PENDING') break
-          try {
-            const token = localStorage.getItem('authToken')
-            await axios.patch(
-              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
-              {
-                status: 'PENDING',
-              },
-              { headers: { Authorization: `Bearer ${token}` } },
-            )
-            this.getInvoices()
-          } catch (err) {
-            console.error(err)
-            break
-          }
-          break
-
-        case 'markAsPaid':
-          if (invoice.status === 'PAID') break
-          try {
-            const token = localStorage.getItem('authToken')
-            const response = await axios.patch(
-              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
-              {
-                status: 'PAID',
-              },
-              { headers: { Authorization: `Bearer ${token}` } },
-            )
-            this.getInvoices()
-          } catch (err) {
-            console.error(err)
-            break
-          }
-          break
-
-        case 'downloadInvoice':
-          const { toast } = useToast()
-          try{
-            await invoicePDF(invoice);
-          }
-          catch(err){
-            toast({
-              description: 'Unable to download the invoice.',
-            })
-          }
-          break
+  watch: {
+    isEditDialogOpen(newVal) {
+      if (!newVal) {
+        this.resetForm() // Reset form when dialog is closed
       }
     },
-
+  },
+  methods: {
     async createInvoice() {
       const { toast } = useToast()
       const token = localStorage.getItem('authToken')
@@ -548,7 +768,23 @@ export default {
         })
       }
     },
-
+    async deleteInvoice() {
+      const { toast } = useToast()
+      try {
+        const token = localStorage.getItem('authToken')
+        const response = await axios.delete('http://localhost:3000/invoice/delete', {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { id: this.selectedInvoice.id }, // Pass the data here
+        })
+        this.getInvoices()
+        toast({ description: response.data.message })
+      } catch (err) {
+        toast({ description: 'Unable to delete the invoice' })
+      }
+    },
+    async editInvoice() {
+      console.log('hello')
+    },
     async getInvoices() {
       const token = localStorage.getItem('authToken')
       try {
@@ -563,7 +799,86 @@ export default {
         console.error(err.response.data.error)
       }
     },
+    async handleTableDropdownAction(action, invoice) {
+      switch (action) {
+        case 'editInvoice':
+          this.isEditDialogOpen = true
+          this.invoiceNumber = invoice.invoice_number
+          this.date = invoice.invoice_date
+          this.currency = invoice.currency
+          this.billToName = invoice.bill_to_name
+          this.billToAddress = invoice.bill_to_address
+          this.billToCity = invoice.bill_to_city
+          this.billToCountry = invoice.bill_to_country
+          this.billToNumber = invoice.bill_to_phone_number
+          this.billFromName = invoice.bill_from_name
+          this.billFromAddress = invoice.bill_from_address
+          this.billFromCity = invoice.bill_from_address
+          this.billFromCountry = invoice.bill_from_country
+          this.billFromNumber = invoice.bill_from_phone_number
+          this.description = invoice.description
+          this.rate = invoice.rate
+          this.quantity = invoice.quantity
+          this.notes = invoice.notes
+          this.status = invoice.status
+          break
 
+        case 'deleteInvoice':
+          this.confirmDeleteDialog = true
+          break
+
+        case 'markAsPending':
+          if (invoice.status === 'PENDING') break
+          try {
+            const token = localStorage.getItem('authToken')
+            await axios.patch(
+              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
+              {
+                status: 'PENDING',
+              },
+              { headers: { Authorization: `Bearer ${token}` } },
+            )
+            this.getInvoices()
+          } catch (err) {
+            console.error(err)
+            break
+          }
+          break
+
+        case 'markAsPaid':
+          if (invoice.status === 'PAID') break
+          try {
+            const token = localStorage.getItem('authToken')
+            const response = await axios.patch(
+              `http://localhost:3000/invoice/changeStatus/${invoice.id}`,
+              {
+                status: 'PAID',
+              },
+              { headers: { Authorization: `Bearer ${token}` } },
+            )
+            this.getInvoices()
+          } catch (err) {
+            console.error(err)
+            break
+          }
+          break
+
+        case 'downloadInvoice':
+          const { toast } = useToast()
+          try {
+            await invoicePDF(invoice)
+          } catch (err) {
+            toast({
+              description: 'Unable to download the invoice.',
+            })
+          }
+          break
+      }
+    },
+    openDeleteDialog(invoice) {
+      this.selectedInvoice = invoice
+      this.confirmDeleteDialog = true
+    },
     resetForm() {
       this.invoiceNumber = ''
       this.date = ''

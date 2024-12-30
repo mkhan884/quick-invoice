@@ -56,3 +56,14 @@ exports.changeStatus = (db, invoice_id, status) => {
         })
     })
 }
+
+exports.deleteInvoice = (db, invoice_id) => {
+    return new Promise((resolve, reject) =>{
+        db.query('DELETE FROM invoices WHERE id = ?', [invoice_id], (err, result) =>{
+            if(err){
+                return reject()
+            }
+            resolve()
+        })
+    })
+}

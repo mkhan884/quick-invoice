@@ -13,7 +13,13 @@
         </div>
         <div class="password mt-2">
           <Label for="password" class="text-xs">Password</Label>
-          <Input class="text-xs" id="password" type="password" placeholder="Password" v-model="password" />
+          <Input
+            class="text-xs"
+            id="password"
+            type="password"
+            placeholder="Password"
+            v-model="password"
+          />
         </div>
       </CardContent>
       <CardFooter>
