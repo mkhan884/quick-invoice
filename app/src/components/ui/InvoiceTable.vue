@@ -9,7 +9,6 @@
         </div>
         <div class="new-invoice">
           <Button size="sm" @click="this.isDialogOpen = !this.isDialogOpen">New Invoice</Button>
-
           <Dialog v-model:open="isDialogOpen">
             <DialogScrollContent class="sm:max-w-[600px]">
               <DialogHeader>
@@ -579,7 +578,6 @@
 </template>
 
 <script>
-import NewInvoiceDialog from './NewInvoiceDialog.vue'
 import {
   Card,
   CardContent,
@@ -681,10 +679,10 @@ export default {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-    NewInvoiceDialog
   },
   data() {
     return {
+      invoice_id: '',
       invoicenumber: '',
       date: '',
       currency: '',
@@ -783,7 +781,44 @@ export default {
       }
     },
     async editInvoice() {
-      console.log('hello')
+      const token = localStorage.getItem('authToken')
+      const { toast } = useToast()
+      const updatedInvoice = {
+        id: this.invoice_id,
+        invoice_number: this.invoiceNumber,
+        invoice_date: this.date,
+        currency: this.currency,
+        bill_to_name: this.billToName,
+        bill_to_address: this.billToAddress,
+        bill_to_city: this.billToCity,
+        bill_to_country: this.billToCountry,
+        bill_to_phone_number: this.billToNumber,
+        bill_from_name: this.billFromName,
+        bill_from_address: this.billFromAddress,
+        bill_from_city: this.billFromCity,
+        bill_from_country: this.billFromCountry,
+        bill_from_phone_number: this.billFromNumber,
+        description: this.description,
+        rate: this.rate,
+        quantity: this.quantity,
+        notes: this.notes,
+        status: this.status,
+      }
+
+      try {
+        const response = await axios.put(
+          'http://localhost:3000/invoice/update',
+          {
+            invoice: updatedInvoice,
+          },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        toast({ description: response.data.message })
+        this.isEditDialogOpen = false
+        this.getInvoices()
+      } catch (err) {
+        toast({ description: err.response.data.error })
+      }
     },
     async getInvoices() {
       const token = localStorage.getItem('authToken')
@@ -803,6 +838,7 @@ export default {
       switch (action) {
         case 'editInvoice':
           this.isEditDialogOpen = true
+          this.invoice_id = invoice.id
           this.invoiceNumber = invoice.invoice_number
           this.date = invoice.invoice_date
           this.currency = invoice.currency

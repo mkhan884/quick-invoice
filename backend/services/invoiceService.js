@@ -31,6 +31,50 @@ exports.createInvoice = (db, invoiceInfo, user_id) => {
         
     }
 
+    exports.updateInvoice = (db, invoiceInfo) => {
+        if (!invoiceInfo.invoice.id) {
+            throw new Error('Invoice ID is required for update');
+        }
+
+        const baseQuery = 'UPDATE invoices';
+        const updates = [];
+        const values = [];
+    
+        // Loop through the object to construct dynamic query parts
+        for (const [key, value] of Object.entries(invoiceInfo.invoice)) {
+            if (key !== 'id' && value !== undefined && value !== null && value !== '') {
+                updates.push(`${key} = ?`);
+                values.push(value);
+            }
+        }
+    
+        // Ensure there are fields to update
+        if (updates.length === 0) {
+            throw new Error('No valid fields provided for the invoice update');
+        }
+    
+        // Add the ID value for the WHERE clause
+        values.push(invoiceInfo.invoice.id);
+    
+        // Construct the query
+        const query = `${baseQuery} SET ${updates.join(', ')} WHERE id = ?`;
+        console.log(values)
+    
+        // Execute the query
+        return new Promise((resolve, reject) => {
+            db.query(query, values, async (err, result) => {
+                console.log(query);
+                if (err) {
+                   return reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    };
+    
+
+
 exports.getInvoices = (db, user_id) => {
     return new Promise((resolve, reject) =>{
         db.query(`SELECT id, invoice_number, invoice_date, bill_from_name, bill_from_address, 
