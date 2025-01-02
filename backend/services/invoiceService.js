@@ -33,7 +33,7 @@ exports.createInvoice = (db, invoiceInfo, user_id) => {
 
     exports.updateInvoice = (db, invoiceInfo) => {
         if (!invoiceInfo.invoice.id) {
-            throw new Error('Invoice ID is required for update');
+            return new Error('Invoice ID is required for update');
         }
 
         const baseQuery = 'UPDATE invoices';
@@ -50,7 +50,7 @@ exports.createInvoice = (db, invoiceInfo, user_id) => {
     
         // Ensure there are fields to update
         if (updates.length === 0) {
-            throw new Error('No valid fields provided for the invoice update');
+            return new Error('No valid fields provided for the invoice update');
         }
     
         // Add the ID value for the WHERE clause
@@ -60,7 +60,6 @@ exports.createInvoice = (db, invoiceInfo, user_id) => {
         const query = `${baseQuery} SET ${updates.join(', ')} WHERE id = ?`;
         console.log(values)
     
-        // Execute the query
         return new Promise((resolve, reject) => {
             db.query(query, values, async (err, result) => {
                 console.log(query);

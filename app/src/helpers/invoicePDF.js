@@ -32,7 +32,7 @@ export async function invoicePDF(invoice) {
     doc.internal.scaleFactor
   var xPos = 210 - addressWidth - marginRight
   doc.text(invoice.bill_from_address, xPos, 36)
-
+  console.log(invoice.bill_from_city)
   const cityCountry = `${invoice.bill_from_city}, ${invoice.bill_from_country}`
   const cityCountryWidth =
     (doc.getStringUnitWidth(cityCountry) * doc.internal.getFontSize()) / doc.internal.scaleFactor

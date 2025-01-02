@@ -1,7 +1,7 @@
 <template>
-  <div class="card-wrapper w-4/6">
+  <div class="card-wrapper h-full">
     <Toaster />
-    <Card>
+    <Card class="h-full">
       <CardHeader class="flex flex-row justify-between">
         <div>
           <CardTitle> Invoices </CardTitle>
@@ -9,6 +9,7 @@
         </div>
         <div class="new-invoice">
           <Button size="sm" @click="this.isDialogOpen = !this.isDialogOpen">New Invoice</Button>
+          
           <Dialog v-model:open="isDialogOpen">
             <DialogScrollContent class="sm:max-w-[600px]">
               <DialogHeader>
@@ -34,7 +35,7 @@
                 </div>
                 <div class="invoice-currency flex flex-col w-full">
                   <Label for="invoice-currency" class="mb-2 text-xs">Currency</Label>
-                  <Input class="text-xs" id="invoice-currency" type="text" v-model="currency" />
+                  <Input class="text-xs" id="invoice-currency" type="text" placeholder="Currency" v-model="currency" />
                 </div>
               </div>
               <div class="bill-to mt-1">
@@ -64,7 +65,7 @@
                       />
                     </div>
                     <div class="mt-2">
-                      <Label for="company-number" class="text-xs">Business Number</Label>
+                      <Label for="company-number" class="text-xs">Phone Number</Label>
                       <Input
                         class="text-xs"
                         id="company-number"
@@ -701,7 +702,6 @@ export default {
       quantity: 0,
       notes: '',
       status: '',
-      isDialogOpen: false,
       invoices: [],
       confirmDeleteDialog: false,
       selectedInvoice: null,
@@ -803,6 +803,7 @@ export default {
         quantity: this.quantity,
         notes: this.notes,
         status: this.status,
+        total: this.total,
       }
 
       try {
@@ -902,6 +903,7 @@ export default {
         case 'downloadInvoice':
           const { toast } = useToast()
           try {
+            console.log(invoice)
             await invoicePDF(invoice)
           } catch (err) {
             toast({

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen flex-col justify-between border-e bg-white">
+  <div class="flex h-screen flex-col justify-between border-e ">
     <div class="px-4 py-6">
       <ul class="mt-6 space-y-1">
         <li class="group">
@@ -63,10 +63,54 @@
         </li>
       </ul>
     </div>
+    <div class="dark-mode-toggle">
+      <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button variant="outline">
+        <Icon icon="radix-icons:moon" class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Icon icon="radix-icons:sun" class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <span class="sr-only">Toggle theme</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuItem @click="setMode('light')">
+        Light
+      </DropdownMenuItem>
+      <DropdownMenuItem @click="setMode('dark')">
+        Dark
+      </DropdownMenuItem>
+      <DropdownMenuItem @click="setMode('auto')">
+        System
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+    </div>
   </div>
 </template>
 <script>
-export default {}
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Icon } from '@iconify/vue'
+import { useColorMode } from '@vueuse/core'
+
+export default {
+  name: "Sidebar",
+  components: {
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    Icon
+  },
+  setup() {
+    const mode = useColorMode();
+    const setMode = (value) => {
+      mode.value = value;
+    };
+    return { setMode };
+  },
+
+}
 </script>
 
-<style></style>
