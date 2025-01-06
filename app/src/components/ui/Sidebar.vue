@@ -7,7 +7,8 @@
             <a
               href="#"
               class="flex flex-row block rounded-lg px-4 py-2 text-sm text-gray-500 font-medium hover:bg-gray-100 hover:text-gray-700 align-middle"
-            >
+              :class="{ 'bg-gray-100 text-gray-700': $route.path === '/app/dashboard' }"
+              >
               <div class="icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -20,6 +21,8 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   class="lucide lucide-house text-gray-500 group-hover:text-black"
+                  :class="{'text-black':$route.path === '/app/dashboard'}"             
+
                 >
                   <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
                   <path
@@ -36,6 +39,7 @@
             <a
               href="#"
               class="flex flex-row block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 align-middle"
+              :class="{ 'bg-gray-100 text-gray-700': $route.path === '/app/invoices' }"
             >
               <div class="icon">
                 <svg
@@ -48,7 +52,8 @@
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  class="lucide lucide-file-text text-gray-500 group-hover:text-black"
+                  class="lucide lucide-file-text text-gray-500 group-hover:text-black"     
+                  :class="{'text-black':$route.path === '/app/invoices'}"             
                 >
                   <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
                   <path d="M14 2v4a2 2 0 0 0 2 2h4" />

@@ -6,9 +6,11 @@ import Register from '@/views/Register.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 import Dashboard from '@/components/ui/Dashboard.vue'
 import InvoiceTable from '@/components/ui/InvoiceTable.vue'
+import LandingPage from '@/views/LandingPage.vue'
 
 const routes = [
-  { path: '/', name: 'Login', component: Login },
+  { path: '/', name: 'Landing', component: LandingPage },
+  { path: '/login', name: 'Login', component: Login },
   { path: '/register', name: 'Register', component: Register },
   {
     path: '/app',
@@ -29,14 +31,14 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('authToken')
   if (to.meta.requiresAuth) {
-    if (token === null) return next('/')
+    if (token === null) return next('/login')
 
     const decodedToken = jwtDecode(token)
     const currentTime = Date.now() / 1000
 
     if (decodedToken.exp < currentTime) {
       localStorage.removeItem('authToken')
-      return next('/')
+      return next('/login')
     }
   }
   next()

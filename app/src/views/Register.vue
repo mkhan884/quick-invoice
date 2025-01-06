@@ -27,7 +27,7 @@
       </CardFooter>
       <div class="mb-4 text-center text-sm">
         Already have an account?
-        <router-link to="/">
+        <router-link to="/login">
           <a class="underline"> Login </a>
         </router-link>
       </div>

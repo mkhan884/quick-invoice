@@ -75,18 +75,25 @@ exports.createInvoice = (db, invoiceInfo, user_id) => {
 
 
 exports.getInvoices = (db, user_id) => {
-    return new Promise((resolve, reject) =>{
-        db.query(`SELECT id, invoice_number, invoice_date, bill_from_name, bill_from_address, 
-            bill_from_city, bill_from_country, bill_from_phone_number, bill_to_name, 
-            bill_to_address, bill_to_city, bill_to_country, bill_to_phone_number, description, 
-            quantity, rate, total, currency, notes, status FROM invoices WHERE user_id = ?`, [user_id], (err, result) => {
-            
-            if(err){
-                return reject()
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT id, invoice_number, invoice_date, 
+                   bill_from_name, bill_from_address, bill_from_city, 
+                   bill_from_country, bill_from_phone_number,
+                   bill_to_name, bill_to_address, bill_to_city,
+                   bill_to_country, bill_to_phone_number,   
+                   description, quantity, rate, total,
+                   currency, notes, status 
+            FROM invoices 
+            WHERE user_id = ?`;
+
+        db.query(query, [user_id], (err, result) => {
+            if (err) {
+                return reject(err);
             }
-            resolve(result)
-        })
-    })
+            resolve(result);
+        });
+    });
 }
 
 exports.changeStatus = (db, invoice_id, status) => {
