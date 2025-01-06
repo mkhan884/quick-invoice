@@ -35,7 +35,7 @@
                     <path d="M12 18V6" />
                   </svg>
                 </div>
-                <div class="text-2xl font-bold">$45,231.89</div>
+                <div class="text-2xl font-bold">{{ this.totalRevenue }}</div>
               </CardContent>
             </Card>
             <Card class="flex-1 min-w-[200px]">
@@ -64,7 +64,7 @@
                     <path d="M12 17v-6" />
                   </svg>
                 </div>
-                <div class="text-2xl font-bold">+12</div>
+                <div class="text-2xl font-bold">{{ this.totalInvoices }}</div>
               </CardContent>
             </Card>
             <Card class="flex-1 min-w-[200px]">
@@ -90,7 +90,7 @@
                     <path d="m9 15 2 2 4-4" />
                   </svg>
                 </div>
-                <div class="text-2xl font-bold">10</div>
+                <div class="text-2xl font-bold">{{ this.paidInvoices }}</div>
               </CardContent>
             </Card>
             <Card class="flex-1 min-w-[200px]">
@@ -117,7 +117,7 @@
                     <path d="m9.5 12.5 5 5" />
                   </svg>
                 </div>
-                <div class="text-2xl font-bold">2</div>
+                <div class="text-2xl font-bold">{{ this.pendingInvoices }}</div>
               </CardContent>
             </Card>
           </div>
@@ -138,6 +138,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import axios from 'axios'
 export default {
   name: 'Dashboard',
   components: {
@@ -154,8 +155,35 @@ export default {
     Badge,
   },
   data() {
-    return {}
+    return {
+      totalRevenue: 0,
+      totalInvoices: 0,
+      paidInvoices: 0,
+      pendingInvoices: 0
+    }
   },
+  mounted() {
+    this.fetchDashboardStats();
+  },
+  methods: {
+    async fetchDashboardStats() {
+      try {
+        const response = await axios.get('http://localhost:3000/dashboard/stats', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        const stats = response.data;
+        this.totalRevenue = stats.stats.totalRevenue;
+        this.totalInvoices = stats.stats.totalInvoices;
+        this.paidInvoices = stats.stats.paidInvoices;
+        this.pendingInvoices = stats.stats.pendingInvoices;
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      }
+    }
+  },
+  
 }
 </script>
 

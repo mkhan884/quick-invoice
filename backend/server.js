@@ -1,6 +1,7 @@
 const express = require ('express')
 const userRouter = require ('./routes/userRoutes')
 const invoiceRouter = require('./routes/invoiceRoutes')
+const dashboardRouter = require('./routes/dashboardRoutes')
 const mysql = require('mysql2');
 const app = express()
 const dotenv = require('dotenv');
@@ -46,3 +47,8 @@ app.use('/invoice', (req,res, next) =>{
   req.db = db;
   next();
 }, invoiceRouter)
+
+app.use('/dashboard', (req, res, next) => {
+  req.db = db;
+  next();
+}, dashboardRouter);
