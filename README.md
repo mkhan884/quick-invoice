@@ -19,6 +19,7 @@ cd app
 npm run dev
 ```
 Finally open the localhost:5173 to use the app. You should be greeted by the QuickInvoice landing page.
+<img width="1425" alt="image" src="https://github.com/user-attachments/assets/9ec2b2c9-1af6-454c-8c2d-180026a911b5" />
 
 
 ### Environment 🌐
